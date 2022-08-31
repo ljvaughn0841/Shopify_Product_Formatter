@@ -6,13 +6,11 @@ from tkinter import ttk
 global df
 df = pd.DataFrame()
 
-
 # For more information on headers in shopify see here
 # https://help.shopify.com/en/manual/products/import-export/using-csv#product-csv-file-format
 shopify_header = ["Title", "Body (HTML)", "Vendor", "Tags", "Published", "Option1 Name", "Option1 Value", "Variant SKU",
                   "Variant Inventory Tracker", "Variant Inventory Policy", "Variant Fulfillment Service",
                   "Variant Price", "Variant Requires Shipping", "Variant Taxable", "Status"]
-
 
 root = Tk()
 root.title('Product Formatter')
@@ -70,27 +68,34 @@ def clear_tree():
     my_tree.delete(*my_tree.get_children())
 
 
-# I need to take the columns in the csv and assign them to columns in the shopify header
-
-# Then fill out other necessary information
-
-# Then add an option to the menu to export the shopify csv
-
-# Create menu item
-
 def apply_shopify_format():
+    print("apply format button")
     print(df)
     print("hello!")
-    print(clicked.get())
+    for i in range(len(DropDownLinks.click_array)):
+        print(DropDownLinks.click_array[i].get())
 
 
-# create dropdowns for specifying columns
-# we need to dynamically create a number of dropdowns depending on button quantity
-clicked = StringVar()
-clicked.set("Shopify Requirement")
+class DropDownLinks:
+    click_array = []
 
-drop = OptionMenu(root, clicked, *shopify_header)
-drop.pack()
+
+def add_link():
+    print("Add link")
+
+    # creates two dropdowns
+    clicked = StringVar()
+    clicked.set("Shopify Requirement")
+
+    DropDownLinks.click_array.append(clicked)
+
+    drop = OptionMenu(root, clicked, *shopify_header)
+    drop.pack()
+    # stores their information in a list
+
+
+def remove_link():
+    print("removes a link")
 
 
 # Adding a menu
@@ -102,9 +107,13 @@ file_menu.add_command(label="Open", command=open_file)
 button_frame = LabelFrame(root, text="Commands")
 button_frame.pack(fill="x", expand=1, padx=20)
 
+# Adds the add link button
+link_button = Button(button_frame, text="Add Link", command=lambda: add_link())
+link_button.grid(row=0, column=0, padx=10, pady=10)
+
 # Adds the format sheet button
 format_button = Button(button_frame, text="Format Sheet", command=lambda: apply_shopify_format())
-format_button.grid(row=0, column=0, padx=10, pady=10)
+format_button.grid(row=0, column=1, padx=10, pady=10)
 
 # Label for errors
 error_label = Label(root, text='')
