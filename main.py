@@ -75,11 +75,18 @@ def apply_shopify_format():
     print(df)
     print("hello!")
     for i in range(len(DropDownLinks.req_array)):
-        print(DropDownLinks.req_array[i].get())
+        print(DropDownLinks.req_array[i].get(), " links to ", DropDownLinks.tbl_array[i].get())
 
 
 class DropDownLinks:
+    # There are two lists containing input from the dropdowns
+    # These dropdowns are linked together by index
+    # The elements of the array are pointers to strings created with StringVar()
+    # The elements value can be retrieved with .get()
+
+    # A list of the requirements that have been selected by the user
     req_array = []
+    # A list of columns from the table the user imported that the user selected
     tbl_array = []
 
 
@@ -101,7 +108,7 @@ def add_link():
 
     row_num = len(DropDownLinks.req_array)
 
-    tbl_drop = OptionMenu(link_frame, tbl, *shopify_header)
+    tbl_drop = OptionMenu(link_frame, tbl, *df.columns)
     tbl_drop.grid(row=row_num, column=0, padx=10, pady=10)
 
     req_drop = OptionMenu(link_frame, req, *shopify_header)
