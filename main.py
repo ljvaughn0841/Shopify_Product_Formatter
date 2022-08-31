@@ -37,31 +37,33 @@ def open_file():
             df = pd.read_csv(str(file[0]))
             print("df is")
             print(df)
+
+            # Clears the old treeview
+            clear_tree()
+
+            # Sets up new treeview
+            my_tree["column"] = list(df.columns)
+            my_tree["show"] = "headings"
+
+            # Loop through column list for headers
+            for column in my_tree["column"]:
+                my_tree.heading(column, text=column)
+
+            # Put data in treeview
+            df_rows = df.to_numpy().tolist()
+            for row in df_rows:
+                my_tree.insert("", "end", values=row)
+
+            # Pack the treeview onto the screen
+            my_tree.pack()
+
+            return df
+
         except ValueError:
-            error_label.config(text="The File Couldn't be Opened")
+            error_label.config(text="ERROR: The File Couldn't be Opened")
+
         except FileNotFoundError:
-            error_label.config(text="The File Couldn't be Found")
-
-    # Clears the old treeview
-    clear_tree()
-
-    # Sets up new treeview
-    my_tree["column"] = list(df.columns)
-    my_tree["show"] = "headings"
-
-    # Loop through column list for headers
-    for column in my_tree["column"]:
-        my_tree.heading(column, text=column)
-
-    # Put data in treeview
-    df_rows = df.to_numpy().tolist()
-    for row in df_rows:
-        my_tree.insert("", "end", values=row)
-
-    # Pack the treeview onto the screen
-    my_tree.pack()
-
-    return df
+            error_label.config(text="ERROR: The File Couldn't be Found")
 
 
 def clear_tree():
@@ -72,26 +74,40 @@ def apply_shopify_format():
     print("apply format button")
     print(df)
     print("hello!")
-    for i in range(len(DropDownLinks.click_array)):
-        print(DropDownLinks.click_array[i].get())
+    for i in range(len(DropDownLinks.req_array)):
+        print(DropDownLinks.req_array[i].get())
 
 
 class DropDownLinks:
-    click_array = []
+    req_array = []
+    tbl_array = []
 
 
 def add_link():
     print("Add link")
 
     # creates two dropdowns
-    clicked = StringVar()
-    clicked.set("Shopify Requirement")
+    req = StringVar()
+    req.set("Shopify Requirement")
 
-    DropDownLinks.click_array.append(clicked)
+    tbl = StringVar()
+    tbl.set("Table Input")
 
-    drop = OptionMenu(root, clicked, *shopify_header)
-    drop.pack()
-    # stores their information in a list
+    # stores the link information in a list
+    DropDownLinks.req_array.append(req)
+    DropDownLinks.tbl_array.append(tbl)
+
+    # link_frame = LabelFrame(root, text="Mapping Links")
+
+    row_num = len(DropDownLinks.req_array)
+
+    tbl_drop = OptionMenu(link_frame, tbl, *shopify_header)
+    tbl_drop.grid(row=row_num, column=0, padx=10, pady=10)
+
+    req_drop = OptionMenu(link_frame, req, *shopify_header)
+    req_drop.grid(row=row_num, column=1, padx=10, pady=10)
+
+    link_frame.pack(fill="x", expand=0, padx=20)
 
 
 def remove_link():
@@ -105,7 +121,7 @@ file_menu.add_command(label="Open", command=open_file)
 
 # Add Buttons
 button_frame = LabelFrame(root, text="Commands")
-button_frame.pack(fill="x", expand=1, padx=20)
+button_frame.pack(fill="x", expand=0, padx=20)
 
 # Adds the add link button
 link_button = Button(button_frame, text="Add Link", command=lambda: add_link())
@@ -115,9 +131,12 @@ link_button.grid(row=0, column=0, padx=10, pady=10)
 format_button = Button(button_frame, text="Format Sheet", command=lambda: apply_shopify_format())
 format_button.grid(row=0, column=1, padx=10, pady=10)
 
+link_frame = LabelFrame(root, text="Mapping Links")
+link_frame.pack(fill="x", expand=0, padx=20)
+
 # Label for errors
 error_label = Label(root, text='')
-error_label.pack(pady=20)
+error_label.pack(pady=20, padx=20, side="bottom", anchor="se")
 
 # the main loop for the program
 root.mainloop()
