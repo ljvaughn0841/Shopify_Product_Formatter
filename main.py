@@ -75,7 +75,7 @@ def apply_shopify_format():
     print(df)
     print("hello!")
     for i in range(len(DropDownLinks.req_array)):
-        print(DropDownLinks.req_array[i].get(), " links to ", DropDownLinks.tbl_array[i].get())
+        print(DropDownLinks.tbl_array[i].get(), " links to ", DropDownLinks.req_array[i].get())
 
 
 class DropDownLinks:
@@ -120,6 +120,15 @@ def add_link():
 def remove_link():
     print("removes a link")
 
+    # removes the bottom two dropdowns from the link frame
+    slaves = link_frame.grid_slaves()
+    slaves[0].destroy()
+    slaves[1].destroy()
+
+    # Pops off the ends of the req and tbl array ( removes the dropdowns values from storage )
+    DropDownLinks.req_array.pop()
+    DropDownLinks.tbl_array.pop()
+
 
 # Adding a menu
 file_menu = Menu(my_menu, tearoff=False)
@@ -134,9 +143,13 @@ button_frame.pack(fill="x", expand=0, padx=20)
 link_button = Button(button_frame, text="Add Link", command=lambda: add_link())
 link_button.grid(row=0, column=0, padx=10, pady=10)
 
+# Adds the remove link button
+link_button = Button(button_frame, text="Remove Link", command=lambda: remove_link())
+link_button.grid(row=0, column=1, padx=10, pady=10)
+
 # Adds the format sheet button
 format_button = Button(button_frame, text="Format Sheet", command=lambda: apply_shopify_format())
-format_button.grid(row=0, column=1, padx=10, pady=10)
+format_button.grid(row=0, column=2, padx=10, pady=10)
 
 link_frame = LabelFrame(root, text="Mapping Links")
 link_frame.pack(fill="x", expand=0, padx=20)
