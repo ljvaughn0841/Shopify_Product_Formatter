@@ -130,10 +130,21 @@ def remove_link():
     DropDownLinks.tbl_array.pop()
 
 
+def export_file():
+    print("Exporting Shopify Formatted File")
+    new_shopify_df = pd.DataFrame(columns=shopify_header)
+    print(new_shopify_df)
+    for i in range(len(DropDownLinks.req_array)):
+        new_shopify_df[DropDownLinks.req_array[i].get()] = df[DropDownLinks.tbl_array[i].get()]
+    print(new_shopify_df)
+    new_shopify_df.to_csv('new_shopify_file.csv', index=False)
+
+
 # Adding a menu
 file_menu = Menu(my_menu, tearoff=False)
 my_menu.add_cascade(label="File", menu=file_menu)
 file_menu.add_command(label="Open", command=open_file)
+file_menu.add_command(label="Export File", command=export_file)
 
 # Add Buttons
 button_frame = LabelFrame(root, text="Commands")
