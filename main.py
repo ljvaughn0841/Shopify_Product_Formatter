@@ -10,7 +10,7 @@ df = pd.DataFrame()
 # https://help.shopify.com/en/manual/products/import-export/using-csv#product-csv-file-format
 shopify_header = ["Title", "Body (HTML)", "Vendor", "Tags", "Published", "Option1 Name", "Option1 Value", "Variant SKU",
                   "Variant Inventory Tracker", "Variant Inventory Policy", "Variant Fulfillment Service",
-                  "Variant Price", "Variant Requires Shipping", "Variant Taxable", "Status"]
+                  "Variant Price", "Status"]
 
 root = Tk()
 root.title('Product Formatter')
@@ -134,10 +134,28 @@ def export_file():
     print("Exporting Shopify Formatted File")
     new_shopify_df = pd.DataFrame(columns=shopify_header)
     print(new_shopify_df)
+
+    # Adding data to the new shopify list from the dropdown linked columns in imported file
     for i in range(len(DropDownLinks.req_array)):
         new_shopify_df[DropDownLinks.req_array[i].get()] = df[DropDownLinks.tbl_array[i].get()]
     print(new_shopify_df)
     new_shopify_df.to_csv('new_shopify_file.csv', index=False)
+
+    # Adding in the default variables
+    # TODO make an array for defaults and make this into a loop
+    if "Vendor" not in DropDownLinks.req_array:
+        new_shopify_df["Vendor"] = "CleanMax"
+    if "Published" not in DropDownLinks.req_array:
+        new_shopify_df["Published"] = "TRUE"
+    if "Variant Inventory Policy" not in DropDownLinks.req_array:
+        new_shopify_df["Variant Inventory Policy"] = "deny"
+    if "Variant Fulfillment Service" not in DropDownLinks.req_array:
+        new_shopify_df["Variant Fulfillment Service"] = "manual"
+    if "Status" not in DropDownLinks.req_array:
+        new_shopify_df["Status"] = "draft"
+
+    # Exporting the new shopify df to a csv file
+    new_shopify_df.to_csv('ShopifyFormatExport.csv', index=False)
 
 
 # Adding a menu
@@ -164,6 +182,8 @@ format_button.grid(row=0, column=2, padx=10, pady=10)
 
 link_frame = LabelFrame(root, text="Mapping Links")
 link_frame.pack(fill="x", expand=0, padx=20)
+
+# TODO make an area where users can select default variables and assign them valid values
 
 # Label for errors
 error_label = Label(root, text='')
